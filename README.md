@@ -1,37 +1,36 @@
-# E-commerce Performance Lab
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Start
-npm install
+## Getting Started
+
+First, run the development server:
+
+```bash
 npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-## Intentional bugs
-This app is deliberately inefficient. Do NOT fix these before profiling.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-1. 1,200 images load eagerly from an external image service.
-2. All 1,200 products render at once; no pagination/virtualization.
-3. Search filters on every keystroke with no debounce.
-4. Every cart update re-renders the entire product grid.
-5. ProductCard is not memoized.
-6. Sorting mutates the filtered array.
-7. Images are large and have no lazy loading.
-8. No explicit image dimensions beyond CSS/aspect-ratio.
-9. Heavy DOM size makes layout/style work visible.
-10. External image requests create network variability.
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-## Suggested lab
-A. Baseline Lighthouse.
-B. Chrome DevTools Network: inspect request count, image transfer, waterfall.
-C. Performance: record typing/search and cart click.
-D. React DevTools Profiler: identify commits and expensive components.
-E. Fix ONE issue at a time.
-F. Re-run measurements and compare.
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Target fixes to practice:
-- loading="lazy"
-- responsive image sizes / modern formats
-- debounce search
-- React.memo
-- useMemo/useCallback where justified
-- pagination or virtualization
-- server-side filtering/pagination (conceptually)
-- bundle/code splitting
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
