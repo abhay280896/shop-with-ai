@@ -1,9 +1,10 @@
 "use client";
 import Pagination from "./Pagination";
-import { getProducts, Product } from "@/lib/products";
+import { getProducts } from "@/lib/products";
 import { useState } from "react";
 import Card from "./Card";
 import Loading from "./loading";
+import type { PaginationPropsType, Product } from "./types/product";
 
 const ProductClient = ({
   initialProducts,
@@ -12,6 +13,8 @@ const ProductClient = ({
   initialProducts: Product[];
   total: number;
 }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +22,8 @@ const ProductClient = ({
   const onPaginationChange = async (
     skip: number,
     limit: number,
-  ): Promise<boolean> => {
+    page: number,
+  ) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -28,22 +32,26 @@ const ProductClient = ({
         limit,
       });
       setProducts(data.products);
-      return true;
+      setCurrentPage(page);
+      setLimit(limit);
     } catch (err) {
       setError(err instanceof Error ? err.message : "something went wrong");
-      return false;
     } finally {
       setIsLoading(false);
     }
   };
 
+  const PaginationProps: PaginationPropsType = {
+    total,
+    isLoading,
+    limit,
+    currentPage,
+    onPaginationChange,
+  };
+
   return (
     <>
-      <Pagination
-        total={total}
-        isLoading={isLoading}
-        onPaginationChange={onPaginationChange}
-      />
+      <Pagination {...PaginationProps} />
       {error && (
         <p className="m-7 text-red-500" role="alert">
           {error}

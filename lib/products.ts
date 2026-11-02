@@ -1,23 +1,8 @@
-export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  price: number;
-  rating: number;
-  thumbnail: string;
-  returnPolicy: string;
-}
+import type {
+  PaginationPayloadInterface,
+  ProductAPIResponse,
+} from "@/app/types/product";
 
-export interface ProductAPIResponse {
-  products: Product[];
-  total: number;
-  skip: number;
-  limit: number;
-}
-export interface PaginationPayloadInterface {
-  skip: number;
-  limit: number;
-}
 export const getProducts = async ({
   skip = 0,
   limit = 10,

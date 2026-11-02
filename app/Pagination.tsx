@@ -1,45 +1,30 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { PaginationPropsType } from "./types/product";
 
 const limitOptions = [10, 20, 30, 40, 50, 100];
 
-type propsType = {
-  total: number;
-  isLoading: boolean;
-  onPaginationChange: (skip: number, limit: number) => Promise<boolean>;
-};
-
-const Pagination = ({ total, isLoading, onPaginationChange }: propsType) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  console.log("currentPage", currentPage);
-
+const Pagination = ({
+  total,
+  isLoading,
+  limit,
+  currentPage,
+  onPaginationChange,
+}: PaginationPropsType) => {
   const totalPages = Math.ceil(total / limit);
   const pageArr = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const handlePagination = async (targetPage: number) => {
-    console.log("handlePagination", targetPage, targetPage * limit);
-    const skip = (targetPage - 1) * limit;
-    const updatePaginationstates: boolean = await onPaginationChange(
-      skip,
-      limit,
-    );
-    if (updatePaginationstates) {
-      setCurrentPage(targetPage);
+  const handlePagination = (targetPage: number) => {
+    if (targetPage <= 1 || targetPage >= totalPages || isLoading) {
+      return;
     }
+    const skip = (targetPage - 1) * limit;
+    onPaginationChange(skip, limit, targetPage);
   };
 
-  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const locaLimit = Number(e.target.value);
-    const updatePaginationstates: boolean = await onPaginationChange(
-      0,
-      locaLimit,
-    );
-    if (updatePaginationstates) {
-      setLimit(locaLimit);
-      setCurrentPage(1);
-    }
+    onPaginationChange(0, locaLimit, 1);
   };
 
   return (
