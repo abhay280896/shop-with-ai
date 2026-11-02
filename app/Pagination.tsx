@@ -6,35 +6,40 @@ const limitOptions = [10, 20, 30, 40, 50, 100];
 
 type propsType = {
   total: number;
-  onPaginationChange: (skip: number, limit: number) => void;
+  isLoading: boolean;
+  onPaginationChange: (skip: number, limit: number) => Promise<boolean>;
 };
 
-const Pagination = ({ total, onPaginationChange }: propsType) => {
+const Pagination = ({ total, isLoading, onPaginationChange }: propsType) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
+  console.log("currentPage", currentPage);
 
-  const totalPages = Array.from({ length: Math.floor(total / limit) });
+  const totalPages = Math.ceil(total / limit);
+  const pageArr = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  const onClickPrevious = async () => {
-    const nextPrevious = (currentPage - 1) * limit;
-    setCurrentPage(currentPage - 1);
-    onPaginationChange(nextPrevious, limit);
+  const handlePagination = async (targetPage: number) => {
+    console.log("handlePagination", targetPage, targetPage * limit);
+    const skip = (targetPage - 1) * limit;
+    const updatePaginationstates: boolean = await onPaginationChange(
+      skip,
+      limit,
+    );
+    if (updatePaginationstates) {
+      setCurrentPage(targetPage);
+    }
   };
 
-  const onClickNext = async () => {
-    const nextSkip = (currentPage + 1) * limit;
-    setCurrentPage(currentPage + 1);
-    onPaginationChange(nextSkip, limit);
-  };
-
-  const handlePagination = (page: number) => {
-    console.log("handlePagination", page, page * limit);
-    setCurrentPage(page);
-    onPaginationChange(page * limit, limit);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setLimit(Number(e.target.value));
+  const handleChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const locaLimit = Number(e.target.value);
+    const updatePaginationstates: boolean = await onPaginationChange(
+      0,
+      locaLimit,
+    );
+    if (updatePaginationstates) {
+      setLimit(locaLimit);
+      setCurrentPage(1);
+    }
   };
 
   return (
@@ -42,8 +47,7 @@ const Pagination = ({ total, onPaginationChange }: propsType) => {
       <select
         className="bg-black text-white border border-white rounded px-2 py-1 my-1.5"
         onChange={(e) => handleChange(e)}
-        name=""
-        id=""
+        value={limit}
       >
         {limitOptions.map((e) => (
           <option key={e} value={e}>
@@ -53,27 +57,28 @@ const Pagination = ({ total, onPaginationChange }: propsType) => {
       </select>
       <div className="flex">
         <button
-          className="bg-white text-black w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer"
-          onClick={onClickPrevious}
-          disabled={currentPage === 1}
+          className="bg-white text-black w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer disabled:cursor-no-drop disabled:bg-gray-600"
+          onClick={() => handlePagination(currentPage - 1)}
+          disabled={currentPage <= 1 || isLoading}
         >
           <ChevronLeft />
         </button>
-        {totalPages.map((_, i) => (
+        {pageArr.map((i) => (
           <button
+            disabled={isLoading}
             key={i}
-            className={`w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer ${currentPage === i + 1 ? `bg-purple-700 text-white ` : `bg-white text-black`}`}
+            className={`w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer disabled:cursor-no-drop disabled:bg-gray-600 ${currentPage === i ? `bg-purple-700 text-white ` : `bg-white text-black`}`}
             onClick={() => {
-              handlePagination(i + 1);
+              handlePagination(i);
             }}
           >
-            {i + 1}
+            {i}
           </button>
         ))}
         <button
-          className="bg-white text-black w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer"
-          onClick={onClickNext}
-          disabled={currentPage === totalPages.length}
+          className="bg-white text-black w-6.25 h-6.25 mx-0.5 text-center text-sm/6 cursor-pointer disabled:cursor-no-drop disabled:bg-gray-600"
+          onClick={() => handlePagination(currentPage + 1)}
+          disabled={currentPage >= totalPages || isLoading}
         >
           <ChevronRight />
         </button>

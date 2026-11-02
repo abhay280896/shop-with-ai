@@ -8,24 +8,20 @@ export interface Product {
   returnPolicy: string;
 }
 
-export interface PaginationPropsType {
-  total: number;
-}
-
 export interface ProductAPIResponse {
   products: Product[];
   total: number;
   skip: number;
   limit: number;
 }
-export interface paginationPayloadInterface {
+export interface PaginationPayloadInterface {
   skip: number;
   limit: number;
 }
 export const getProducts = async ({
   skip = 0,
   limit = 10,
-}: paginationPayloadInterface): Promise<ProductAPIResponse> => {
+}: PaginationPayloadInterface): Promise<ProductAPIResponse> => {
   console.log("api call", skip, limit);
 
   const resp = await fetch(
@@ -35,6 +31,5 @@ export const getProducts = async ({
     throw new Error("Failed to fetch products");
   }
   const data = await resp.json();
-  console.log("data", data);
   return data;
 };
