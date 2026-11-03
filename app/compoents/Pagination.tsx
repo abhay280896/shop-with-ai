@@ -1,6 +1,6 @@
 "use client";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PaginationPropsType } from "./types/product";
+import { PaginationPropsType } from "../types/product";
 
 const limitOptions = [10, 20, 30, 40, 50, 100];
 
@@ -15,7 +15,7 @@ const Pagination = ({
   const pageArr = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handlePagination = (targetPage: number) => {
-    if (targetPage <= 1 || targetPage >= totalPages || isLoading) {
+    if (targetPage < 1 || targetPage > totalPages || isLoading) {
       return;
     }
     const skip = (targetPage - 1) * limit;

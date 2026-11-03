@@ -1,12 +1,15 @@
-import { Product } from "@/lib/products";
-import { Star } from "lucide-react";
+"use client";
+import { Heart, Star } from "lucide-react";
 import Image from "next/image";
+import { Product } from "../types/product";
+import { useState } from "react";
 
 type CradProps = {
   products: Product[];
 };
 
 const Crad = ({ products }: CradProps) => {
+  const [wishlist, setWishlist] = useState<boolean>(false);
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 m-7">
       {products.map(
@@ -23,6 +26,15 @@ const Crad = ({ products }: CradProps) => {
             className="border border-white rounded-xs flex flex-col gap-y-2.5 p-2.5 h-112.5"
             key={id}
           >
+            <div className="flex flex-row-reverse cursor-pointer">
+              <Heart
+                onClick={() => {
+                  setWishlist(!wishlist);
+                }}
+                fill={wishlist ? "red" : "white"}
+                stroke=""
+              />
+            </div>
             <div className="relative w-full h-44 shrink-0">
               <Image
                 src={thumbnail}
@@ -43,8 +55,16 @@ const Crad = ({ products }: CradProps) => {
             </div>
 
             <p>Price: ₹{price}</p>
-
-            <p className="line-clamp-1">{returnPolicy}</p>
+            <div
+              className="flex justify-center cursor-pointer"
+              onClick={() => {
+                // setWishlist(!wishlist);
+              }}
+            >
+              <button className="border border-blue-600 bg-blue-600 rounded-xs w-12/12 cursor-pointer">
+                Add
+              </button>
+            </div>
           </div>
         ),
       )}

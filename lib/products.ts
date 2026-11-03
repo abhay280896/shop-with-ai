@@ -18,3 +18,25 @@ export const getProducts = async ({
   const data = await resp.json();
   return data;
 };
+
+export async function searchProducts(
+  skip = 0,
+  limit = 10,
+  search = "",
+): Promise<ProductAPIResponse> {
+  const params = new URLSearchParams({
+    q: search,
+    skip: String(skip),
+    limit: String(limit),
+  });
+  console.log("params", params);
+  const resp = await fetch(
+    `https://dummyjson.com/products/search?${params.toString()}`,
+  );
+
+  if (!resp.ok) {
+    throw new Error("Failed to search products");
+  }
+
+  return resp.json();
+}

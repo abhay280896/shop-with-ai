@@ -1,5 +1,5 @@
 import { getProducts } from "@/lib/products";
-import ProductClient from "./ProductClient";
+import ProductClient from "./compoents/ProductClient";
 
 export default async function Home() {
   const { products, total } = await getProducts({
@@ -14,7 +14,7 @@ export default async function Home() {
       <h2>Our Products</h2>
       <h3 className="text-green-600">{total}</h3>
       <p className="text">Total products</p>
-      <ProductClient initialProducts={products} total={total} />
+      <ProductClient initialProducts={products} total={total} query="" />
     </main>
   );
 }
